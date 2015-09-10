@@ -6,7 +6,11 @@
 package com.losalpes.servicios;
 
 import com.losalpes.entities.Mueble;
+import com.losalpes.excepciones.OperacionInvalidaException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 /**
@@ -16,24 +20,41 @@ import javax.ejb.Stateless;
 @Stateless
 public class ServicioCatalogoMock implements IServicioCatalogoMockLocal,IServicioCatalogoMockRemote {
 
+     /**
+     * Interface con referencia al servicio de persistencia en el sistema
+     */
+    @EJB
+    private IServicioPersistenciaMockLocal persistencia;
+    
     @Override
     public void agregarMueble(Mueble mueble) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            persistencia.create(mueble);
+        } catch (OperacionInvalidaException ex) {
+            Logger.getLogger(ServicioCatalogoMock.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    @Override
-    public void eliminarMueble(long id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   
 
     @Override
     public List<Mueble> darMuebles() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return persistencia.findAll(Mueble.class);
     }
 
     @Override
     public void removerEjemplarMueble(long id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Mueble m = (Mueble)persistencia.findById(Mueble.class, id);
+        m.setCantidad(m.getCantidad()-1);
+    }
+
+    @Override
+    public void eliminarMueble(long id) {
+        try {
+            persistencia.delete((persistencia.findById(Mueble.class, id)));
+        } catch (OperacionInvalidaException ex) {
+            Logger.getLogger(ServicioCatalogoMock.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }
