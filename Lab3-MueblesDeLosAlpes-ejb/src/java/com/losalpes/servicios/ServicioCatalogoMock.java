@@ -8,8 +8,6 @@ package com.losalpes.servicios;
 import com.losalpes.entities.Mueble;
 import com.losalpes.excepciones.OperacionInvalidaException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -18,24 +16,22 @@ import javax.ejb.Stateless;
  * @author da.lozano13
  */
 @Stateless
-public class ServicioCatalogoMock implements IServicioCatalogoMockLocal,IServicioCatalogoMockRemote {
+public class ServicioCatalogoMock implements IServicioCatalogoMockLocal, IServicioCatalogoMockRemote {
 
-     /**
+    /**
      * Interface con referencia al servicio de persistencia en el sistema
      */
     @EJB
     private IServicioPersistenciaMockLocal persistencia;
-    
+
     @Override
-    public void agregarMueble(Mueble mueble) {
+    public void agregarMueble(Mueble mueble) throws OperacionInvalidaException {
         try {
             persistencia.create(mueble);
         } catch (OperacionInvalidaException ex) {
-            Logger.getLogger(ServicioCatalogoMock.class.getName()).log(Level.SEVERE, null, ex);
+            throw new OperacionInvalidaException(ex.getMessage());
         }
     }
-
-   
 
     @Override
     public List<Mueble> darMuebles() {
@@ -43,18 +39,21 @@ public class ServicioCatalogoMock implements IServicioCatalogoMockLocal,IServici
     }
 
     @Override
-    public void removerEjemplarMueble(long id) {
-        Mueble m = (Mueble)persistencia.findById(Mueble.class, id);
-        m.setCantidad(m.getCantidad()-1);
-    }
-
-    @Override
-    public void eliminarMueble(long id) {
+    public void removerEjemplarMueble(long id) throws OperacionInvalidaException {
         try {
-            persistencia.delete((persistencia.findById(Mueble.class, id)));
-        } catch (OperacionInvalidaException ex) {
-            Logger.getLogger(ServicioCatalogoMock.class.getName()).log(Level.SEVERE, null, ex);
+            Mueble m = (Mueble) persistencia.findById(Mueble.class, id);
+            m.setCantidad(m.getCantidad() - 1);
+        } catch (Exception ex) {
+            throw new OperacionInvalidaException(ex.getMessage());
         }
     }
 
+    @Override
+    public void eliminarMueble(long id) throws OperacionInvalidaException {
+        try {
+            persistencia.delete((persistencia.findById(Mueble.class, id)));
+        } catch (OperacionInvalidaException ex) {
+            throw new OperacionInvalidaException(ex.getMessage());
+        }
+    }
 }
