@@ -1,68 +1,50 @@
 /**
- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * $Id$ LoginBeanTest.java
- * Universidad de los Andes (Bogotá - Colombia)
- * Departamento de Ingeniería de Sistemas y Computación
- * Licenciado bajo el esquema Academic Free License version 3.0
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ $Id$
+ * LoginBeanTest.java Universidad de los Andes (Bogotá - Colombia) Departamento
+ * de Ingeniería de Sistemas y Computación Licenciado bajo el esquema Academic
+ * Free License version 3.0
  *
  * Ejercicio: Muebles de los Alpes
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-
 package com.losalpes.beans;
 
 import org.junit.After;
-import org.junit.Before;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * Clase que realiza pruebas unitarias sobre el Managed bean LoginBean
  */
-public class LoginBeanTest
-{
+public class LoginBeanTest {
 
     //-----------------------------------------------------------
     // Constructor
     //-----------------------------------------------------------
-
     /**
      * Constructor de la clase
      */
-    public LoginBeanTest()
-    {
-        
+    public LoginBeanTest() {
+
     }
 
     //-----------------------------------------------------------
     // Métodos de inicialización y terminación
     //-----------------------------------------------------------
-
-    /**
-     * Método que se ejecuta antes de comenzar la prueba unitaria
-     * Se encarga de inicializar todo lo necesario para la prueba
-     */
-    @Before
-    public void setUp()
-    {
-
-    }
-
     /**
      * Método que se ejecuta después de haber ejecutado la prueba
      */
     @After
-    public void tearDown()
-    {
-        
+    public void tearDown() {
+
     }
 
     /**
-     * Realiza una prueba para verificar la correcta autenticación de un usuario de tipo Administrador
+     * Realiza una prueba para verificar la correcta autenticación de un usuario
+     * de tipo Administrador
      */
     @Test
-    public void testLoginAdmin()
-    {
+    public void testLoginAdmin() {
         LoginBean instance = new LoginBean();
         instance.setUsuario("admin");
         instance.setContraseña("adminadmin");
@@ -70,17 +52,16 @@ public class LoginBeanTest
         String result = instance.ingresar();
         assertEquals(expResult, result);
     }
-    
+
     //-----------------------------------------------------------
     // Métodos de prueba
     //-----------------------------------------------------------
-
     /**
-     * Realiza una prueba para verificar la correcta autenticación de un usuario de tipo Cliente
+     * Realiza una prueba para verificar la correcta autenticación de un usuario
+     * de tipo Cliente
      */
     @Test
-    public void testLoginClient()
-    {
+    public void testLoginClient() {
         LoginBean instance = new LoginBean();
         instance.setUsuario("client");
         instance.setContraseña("clientclient");
