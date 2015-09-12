@@ -14,7 +14,10 @@ import com.losalpes.entities.Mueble;
 import com.losalpes.entities.TipoMueble;
 import com.losalpes.excepciones.OperacionInvalidaException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,9 +68,21 @@ public class ServicioCatalogoMockTest {
      */
     @Test
     public void testAgregarMueble() throws OperacionInvalidaException {
-        Mueble mueble = new Mueble(8L, "Sala Comedor Combo", "Con diseño antiguo, perfecto para casas amplias de diseño colonial", TipoMueble.Interior, 85, "sillaClasica", 1000000);
-        servicio.agregarMueble(mueble);
-        assertTrue(servicio.darMuebles().contains(mueble));
+        try {
+            Properties env = new Properties();
+            env.put("java.naming.factory.initial", "com.sun.enterprise.naming.SerialInitContextFactory");
+            env.put("java.naming.factory.url.pkgs", "com.sun.enterprise.naming");
+            env.put("org.omg.CORBA.ORBInitialPort", "3700");
+            InitialContext contexto;
+            contexto = new InitialContext(env);
+            servicio = (IServicioCatalogoMockRemote) contexto.lookup("com.losalpes.servicios.IServicioCatalogoMockRemote");
+            Mueble mueble = new Mueble(8L, "Sala Comedor Combo", "Con diseño antiguo, perfecto para casas amplias de diseño colonial", TipoMueble.Interior, 85, "sillaClasica", 1000000);
+            servicio.agregarMueble(mueble);
+            System.out.println(servicio.darMuebles().contains(mueble));
+            assertTrue(servicio.darMuebles().contains(mueble));
+        } catch (NamingException ex) {
+            Logger.getLogger(ServicioCatalogoMockTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

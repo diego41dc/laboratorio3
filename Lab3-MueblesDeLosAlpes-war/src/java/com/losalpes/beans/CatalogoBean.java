@@ -14,10 +14,13 @@ package com.losalpes.beans;
 
 import com.losalpes.entities.Mueble;
 import com.losalpes.entities.TipoMueble;
+import com.losalpes.excepciones.OperacionInvalidaException;
 import com.losalpes.servicios.IServicioCatalogoMockLocal;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -99,8 +102,12 @@ public class CatalogoBean implements Serializable
      */
     public void agregarMueble()
     {
-        catalogo.agregarMueble(mueble);
-        mueble=new Mueble();
+        try {
+            catalogo.agregarMueble(mueble);
+            mueble=new Mueble();
+        } catch (OperacionInvalidaException ex) {
+            Logger.getLogger(CatalogoBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -109,11 +116,15 @@ public class CatalogoBean implements Serializable
      */
     public void eliminarMueble(ActionEvent evento)
     {
-        FacesContext context = FacesContext.getCurrentInstance();
-        Map map = context.getExternalContext().getRequestParameterMap();
-        long inventoryId = Long.parseLong((String) map.get("muebleId"));
-
-        catalogo.eliminarMueble(inventoryId);
+        try {
+            FacesContext context = FacesContext.getCurrentInstance();
+            Map map = context.getExternalContext().getRequestParameterMap();
+            long inventoryId = Long.parseLong((String) map.get("muebleId"));
+            
+            catalogo.eliminarMueble(inventoryId);
+        } catch (OperacionInvalidaException ex) {
+            Logger.getLogger(CatalogoBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     /**
