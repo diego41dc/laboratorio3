@@ -60,6 +60,10 @@
                     <h:outputText value="#{venta.producto.tipo}" />
                 </p:column>
 
+                <p:column headerText="Cantidad">
+                    <h:outputText value="#{venta.cantidad}" />
+                </p:column>
+
                 <p:column headerText="Precio Unitario">
                     <h:outputText value="#{venta.producto.precio}" >
                         <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2"/>
@@ -67,7 +71,9 @@
                 </p:column>
 
                 <p:column headerText="Precio Total">
-                    <h:outputText value="#{venta.cantidad*venta.producto.precio}" />
+                    <h:outputText value="#{venta.cantidad*venta.producto.precio}" >
+                        <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2"/>
+                    </h:outputText>
                 </p:column>
 
             </p:dataTable>
