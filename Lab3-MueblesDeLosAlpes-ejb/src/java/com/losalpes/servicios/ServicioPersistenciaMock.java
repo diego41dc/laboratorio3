@@ -140,7 +140,6 @@ public class ServicioPersistenciaMock implements IServicioPersistenciaMockRemote
         } else if (obj instanceof Mueble) {
 
             Mueble m = (Mueble) obj;
-            System.out.println("No Entra " + m.getNombre());
             m.setReferencia(muebles.size() + 1);
             muebles.add(m);
         } else if (obj instanceof Usuario) {
