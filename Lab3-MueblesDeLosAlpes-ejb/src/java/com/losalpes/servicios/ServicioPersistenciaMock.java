@@ -1,15 +1,13 @@
 /**
- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * $Id$ ServicioPersistenciaMock.java
- * Universidad de los Andes (Bogotá - Colombia)
- * Departamento de Ingeniería de Sistemas y Computación
- * Licenciado bajo el esquema Academic Free License version 3.0
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ $Id$
+ * ServicioPersistenciaMock.java Universidad de los Andes (Bogotá - Colombia)
+ * Departamento de Ingeniería de Sistemas y Computación Licenciado bajo el
+ * esquema Academic Free License version 3.0
  *
  * Ejercicio: Muebles de los Alpes
- * 
+ *
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-
 package com.losalpes.servicios;
 
 import com.losalpes.entities.ExperienciaVendedor;
@@ -28,15 +26,14 @@ import javax.ejb.Singleton;
 
 /**
  * Implementación de los servicios de persistencia
- * 
+ *
  */
-@Singleton 
+@Singleton
 public class ServicioPersistenciaMock implements IServicioPersistenciaMockRemote, IServicioPersistenciaMockLocal {
 
     //-----------------------------------------------------------
     // Atributos
     //-----------------------------------------------------------
-
     /**
      * Lista con los vendedores del sistema
      */
@@ -60,14 +57,12 @@ public class ServicioPersistenciaMock implements IServicioPersistenciaMockRemote
     //-----------------------------------------------------------
     // Constructor
     //-----------------------------------------------------------
-
     /**
      * Constructor de la clase. Inicializa los atributos.
      */
-    public ServicioPersistenciaMock()
-    {
-        if (vendedores == null)
-        {
+    public ServicioPersistenciaMock() {
+        System.out.println("Se creó la persistencia");
+        if (vendedores == null) {
             vendedores = new ArrayList();
             ArrayList<ExperienciaVendedor> experiencia = new ArrayList<ExperienciaVendedor>();
 
@@ -104,15 +99,25 @@ public class ServicioPersistenciaMock implements IServicioPersistenciaMockRemote
             //Agrega usuarios al sistema
             usuarios.add(new Usuario("admin", "adminadmin", TipoUsuario.Administrador));
             usuarios.add(new Usuario("client", "clientclient", TipoUsuario.Cliente));
+            usuarios.add(new Usuario("luis", "clientclient", TipoUsuario.Cliente, "Luis Carlos Perez", 12412214l));
+            usuarios.add(new Usuario("juan", "clientclient", TipoUsuario.Cliente, "Juan Fernando Castillo", 346346l));
+            usuarios.add(new Usuario("carlos", "clientclient", TipoUsuario.Cliente, "Carlos Andres Ruiz", 13512512l));
 
             registrosVentas = new ArrayList<RegistroVenta>();
             Random r = new Random();
+            int comprador = 0;
             for (int e = 0; e < 8; e++) {
                 RegistroVenta venta = new RegistroVenta();
                 venta.setCantidad(e);
                 venta.setProducto(muebles.get(e));
                 venta.setFechaVenta(new Date(r.nextInt()));
                 venta.setCiudad("Bogotá");
+                venta.setComprador(usuarios.get(comprador + 2));
+                comprador++;
+                if (comprador == 3) {
+                    comprador = 0;
+                }
+                registrosVentas.add(venta);
             }
         }
     }
@@ -120,96 +125,77 @@ public class ServicioPersistenciaMock implements IServicioPersistenciaMockRemote
     //-----------------------------------------------------------
     // Métodos
     //-----------------------------------------------------------
-    
     /**
      * Permite crear un objeto dentro de la persistencia del sistema.
-     * @param obj Objeto que representa la instancia de la entidad que se quiere crear.
+     *
+     * @param obj Objeto que representa la instancia de la entidad que se quiere
+     * crear.
      */
     @Override
-    public void create(Object obj) throws OperacionInvalidaException
-    {
-        if (obj instanceof Vendedor)
-        {
+    public void create(Object obj) throws OperacionInvalidaException {
+        if (obj instanceof Vendedor) {
             Vendedor v = (Vendedor) obj;
             v.setIdentificacion(vendedores.size() + 1);
             vendedores.add(v);
-        }
-        else if (obj instanceof Mueble)
-        {
+        } else if (obj instanceof Mueble) {
 
             Mueble m = (Mueble) obj;
+            System.out.println("No Entra " + m.getNombre());
             m.setReferencia(muebles.size() + 1);
             muebles.add(m);
-        } 
-        else if (obj instanceof Usuario)
-        {
+        } else if (obj instanceof Usuario) {
             Usuario m = (Usuario) obj;
-            for (Usuario us : usuarios)
-            {
-                if (us.getLogin().equals(m.getLogin()))
-                {
+            for (Usuario us : usuarios) {
+                if (us.getLogin().equals(m.getLogin())) {
                     throw new OperacionInvalidaException("El usuario '" + m.getLogin() + "' ya ha sido registrado en el sistema");
                 }
-                if (us.getDocumento() == m.getDocumento() && us.getTipoDocumento().equals(m.getTipoDocumento()))
-                {
+                if (us.getDocumento() == m.getDocumento() && us.getTipoDocumento().equals(m.getTipoDocumento())) {
                     throw new OperacionInvalidaException("El usuario con documento '" + m.getDocumento() + "' ya ha sido registrado en el sistema");
                 }
             }
             usuarios.add(m);
-        } 
-        else if (obj instanceof RegistroVenta)
-        {
+        } else if (obj instanceof RegistroVenta) {
             registrosVentas.add((RegistroVenta) obj);
         }
     }
 
     /**
      * Permite modificar un objeto dentro de la persistencia del sistema.
-     * @param obj Objeto que representa la instancia de la entidad que se quiere modificar.
+     *
+     * @param obj Objeto que representa la instancia de la entidad que se quiere
+     * modificar.
      */
     @Override
-    public void update(Object obj)
-    {
-        if (obj instanceof Vendedor)
-        {
+    public void update(Object obj) {
+        if (obj instanceof Vendedor) {
             Vendedor editar = (Vendedor) obj;
             Vendedor vendedor;
-            for (int i = 0; i < vendedores.size(); i++)
-            {
+            for (int i = 0; i < vendedores.size(); i++) {
                 vendedor = vendedores.get(i);
-                if (vendedor.getIdentificacion() == editar.getIdentificacion())
-                {
+                if (vendedor.getIdentificacion() == editar.getIdentificacion()) {
                     vendedores.set(i, editar);
                     break;
                 }
 
             }
 
-        }
-        else if (obj instanceof Mueble)
-        {
+        } else if (obj instanceof Mueble) {
             Mueble editar = (Mueble) obj;
             Mueble mueble;
-            for (int i = 0; i < muebles.size(); i++)
-            {
+            for (int i = 0; i < muebles.size(); i++) {
                 mueble = muebles.get(i);
-                if (mueble.getReferencia() == editar.getReferencia())
-                {
+                if (mueble.getReferencia() == editar.getReferencia()) {
                     muebles.set(i, editar);
                     break;
                 }
             }
-        } 
-        else if (obj instanceof Usuario)
-        {
+        } else if (obj instanceof Usuario) {
 
             Usuario editar = (Usuario) obj;
             Usuario usuario;
-            for (int i = 0; i < usuarios.size(); i++)
-            {
+            for (int i = 0; i < usuarios.size(); i++) {
                 usuario = usuarios.get(i);
-                if (usuario.getLogin().equals(editar.getLogin()))
-                {
+                if (usuario.getLogin().equals(editar.getLogin())) {
                     usuarios.set(i, editar);
                     break;
                 }
@@ -219,60 +205,47 @@ public class ServicioPersistenciaMock implements IServicioPersistenciaMockRemote
 
     /**
      * Permite borrar un objeto dentro de la persistencia del sistema.
-     * @param obj Objeto que representa la instancia de la entidad que se quiere borrar.
+     *
+     * @param obj Objeto que representa la instancia de la entidad que se quiere
+     * borrar.
      */
     @Override
-    public void delete(Object obj) throws OperacionInvalidaException
-    {
-        if (obj instanceof Vendedor)
-        {
+    public void delete(Object obj) throws OperacionInvalidaException {
+        if (obj instanceof Vendedor) {
             Vendedor vendedorABorrar = (Vendedor) obj;
 
-            for (int e = 0; e < vendedores.size(); e++)
-            {
+            for (int e = 0; e < vendedores.size(); e++) {
                 Vendedor ven = (Vendedor) vendedores.get(e);
-                if (ven.getIdentificacion() == vendedorABorrar.getIdentificacion())
-                {
+                if (ven.getIdentificacion() == vendedorABorrar.getIdentificacion()) {
                     vendedores.remove(e);
                     break;
                 }
             }
 
-        } 
-        else if (obj instanceof Mueble)
-        {
+        } else if (obj instanceof Mueble) {
             Mueble mueble;
             Mueble eliminar = (Mueble) obj;
-            for (int i = 0; i < muebles.size(); i++)
-            {
+            for (int i = 0; i < muebles.size(); i++) {
                 mueble = muebles.get(i);
-                if (eliminar.getReferencia() == mueble.getReferencia())
-                {
+                if (eliminar.getReferencia() == mueble.getReferencia()) {
                     muebles.remove(i);
                     break;
                 }
 
             }
 
-        } 
-        else if (obj instanceof Usuario)
-        {
+        } else if (obj instanceof Usuario) {
             Usuario usuarioABorrar = (Usuario) obj;
-            for (RegistroVenta rv : registrosVentas)
-            {
-                if (rv.getComprador().getLogin().equals(usuarioABorrar.getLogin()))
-                {
+            for (RegistroVenta rv : registrosVentas) {
+                if (rv.getComprador().getLogin().equals(usuarioABorrar.getLogin())) {
                     System.out.print("no borrado");
                     throw new OperacionInvalidaException("El usuario ha realizado comprar y por lo tanto no puede ser eliminado del sistema.");
                 }
             }
-            if (usuarioABorrar != null && usuarioABorrar.getLogin() != null)
-            {
-                for (int e = 0; e < usuarios.size(); e++)
-                {
+            if (usuarioABorrar != null && usuarioABorrar.getLogin() != null) {
+                for (int e = 0; e < usuarios.size(); e++) {
                     Usuario ven = (Usuario) usuarios.get(e);
-                    if (ven.getLogin().equals(usuarioABorrar.getLogin()))
-                    {
+                    if (ven.getLogin().equals(usuarioABorrar.getLogin())) {
                         usuarios.remove(e);
                         System.out.print("borrado");
                         break;
@@ -283,73 +256,56 @@ public class ServicioPersistenciaMock implements IServicioPersistenciaMockRemote
     }
 
     /**
-     * Retorna la lista de todos los elementos de una clase dada que se encuentran en el sistema.
+     * Retorna la lista de todos los elementos de una clase dada que se
+     * encuentran en el sistema.
+     *
      * @param c Clase cuyos objetos quieren encontrarse en el sistema.
-     * @return list Listado de todos los objetos de una clase dada que se encuentran en el sistema.
+     * @return list Listado de todos los objetos de una clase dada que se
+     * encuentran en el sistema.
      */
     @Override
-    public List findAll(Class c)
-    {
-        if (c.equals(Mueble.class))
-        {
+    public List findAll(Class c) {
+        if (c.equals(Mueble.class)) {
             return muebles;
-        } 
-        else if (c.equals(Vendedor.class))
-        {
+        } else if (c.equals(Vendedor.class)) {
             return vendedores;
-        } 
-        else if (c.equals(Usuario.class))
-        {
+        } else if (c.equals(Usuario.class)) {
             return usuarios;
-        } 
-        else if (c.equals(RegistroVenta.class))
-        {
+        } else if (c.equals(RegistroVenta.class)) {
             return registrosVentas;
-        } 
-        else
-        {
+        } else {
             return null;
         }
     }
 
     /**
-     * Retorna la instancia de una entidad dado un identificador y la clase de la entidadi.
+     * Retorna la instancia de una entidad dado un identificador y la clase de
+     * la entidadi.
+     *
      * @param c Clase de la instancia que se quiere buscar.
      * @param id Identificador unico del objeto.
      * @return obj Resultado de la consulta.
      */
     @Override
-    public Object findById(Class c, Object id)
-    {
-        if (c.equals(Vendedor.class))
-        {
-            for (Object v : findAll(c))
-            {
+    public Object findById(Class c, Object id) {
+        if (c.equals(Vendedor.class)) {
+            for (Object v : findAll(c)) {
                 Vendedor ven = (Vendedor) v;
-                if (ven.getIdentificacion() == (Long)id)
-                {
+                if (ven.getIdentificacion() == (Long) id) {
                     return ven;
                 }
             }
-        } 
-        else if (c.equals(Mueble.class))
-        {
-            for (Object v : findAll(c))
-            {
+        } else if (c.equals(Mueble.class)) {
+            for (Object v : findAll(c)) {
                 Mueble mue = (Mueble) v;
-                if (id.equals(mue.getReferencia()))
-                {
+                if (id.equals(mue.getReferencia())) {
                     return mue;
                 }
             }
-        } 
-        else if (c.equals(Usuario.class))
-        {
-            for (Object v : findAll(c))
-            {
+        } else if (c.equals(Usuario.class)) {
+            for (Object v : findAll(c)) {
                 Usuario mue = (Usuario) v;
-                if (mue.getLogin().equals(id))
-                {
+                if (mue.getLogin().equals(id)) {
                     return mue;
                 }
             }

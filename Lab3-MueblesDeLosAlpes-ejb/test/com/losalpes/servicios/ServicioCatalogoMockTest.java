@@ -13,11 +13,10 @@ package com.losalpes.servicios;
 import com.losalpes.entities.Mueble;
 import com.losalpes.entities.TipoMueble;
 import com.losalpes.excepciones.OperacionInvalidaException;
+import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,21 +67,10 @@ public class ServicioCatalogoMockTest {
      */
     @Test
     public void testAgregarMueble() throws OperacionInvalidaException {
-        try {
-            Properties env = new Properties();
-            env.put("java.naming.factory.initial", "com.sun.enterprise.naming.SerialInitContextFactory");
-            env.put("java.naming.factory.url.pkgs", "com.sun.enterprise.naming");
-            env.put("org.omg.CORBA.ORBInitialPort", "3700");
-            InitialContext contexto;
-            contexto = new InitialContext(env);
-            servicio = (IServicioCatalogoMockRemote) contexto.lookup("com.losalpes.servicios.IServicioCatalogoMockRemote");
-            Mueble mueble = new Mueble(8L, "Sala Comedor Combo", "Con diseño antiguo, perfecto para casas amplias de diseño colonial", TipoMueble.Interior, 85, "sillaClasica", 1000000);
-            servicio.agregarMueble(mueble);
-            System.out.println(servicio.darMuebles().contains(mueble));
-            assertTrue(servicio.darMuebles().contains(mueble));
-        } catch (NamingException ex) {
-            Logger.getLogger(ServicioCatalogoMockTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Mueble mueble = new Mueble(8L, "Sala Comedor Combo", "Con diseño antiguo, perfecto para casas amplias de diseño colonial", TipoMueble.Interior, 85, "sillaClasica", 1000000);
+        servicio.agregarMueble(mueble);
+        System.out.println(servicio.darMuebles().contains(mueble));
+        assertTrue(servicio.darMuebles().contains(mueble));
     }
 
     /**
@@ -93,4 +81,28 @@ public class ServicioCatalogoMockTest {
         servicio.eliminarMueble(1L);
     }
 
+    /**
+     * Método de prueba para probar ontener la lista de Muebles
+     */
+    @Test
+    public void testDarMuebles() throws OperacionInvalidaException {
+        servicio.darMuebles();
+    }
+
+    /**
+     * Método de prueba para probar ontener la lista de Muebles
+     */
+    @Test
+    public void testRemoverEjemplarMueble() throws OperacionInvalidaException {
+        List<Mueble> muebles = servicio.darMuebles();
+        Mueble mueble = muebles.get(0);
+        int cantidadOriginal = mueble.getCantidad();
+        servicio.removerEjemplarMueble(mueble.getReferencia());
+
+        List<Mueble> muebles2 = servicio.darMuebles();
+        Mueble mueble2 = muebles2.get(0);
+        int cantidadModificada = mueble2.getCantidad();
+        assertEquals(cantidadOriginal - 1, cantidadModificada);
+
+    }
 }

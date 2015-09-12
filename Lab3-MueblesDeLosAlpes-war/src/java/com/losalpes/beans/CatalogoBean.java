@@ -1,15 +1,13 @@
 /**
- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * $Id$ CatalogoBean.java
- * Universidad de los Andes (Bogotá - Colombia)
- * Departamento de Ingeniería de Sistemas y Computación
- * Licenciado bajo el esquema Academic Free License version 3.0
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ $Id$
+ * CatalogoBean.java Universidad de los Andes (Bogotá - Colombia) Departamento
+ * de Ingeniería de Sistemas y Computación Licenciado bajo el esquema Academic
+ * Free License version 3.0
  *
  * Ejercicio: Muebles de los Alpes
- * 
+ *
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  */
-
 package com.losalpes.beans;
 
 import com.losalpes.entities.Mueble;
@@ -26,25 +24,23 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 
-
 /**
  * Managed bean encargado del catálogo de muebles en el sistema
- * 
+ *
  */
-public class CatalogoBean implements Serializable
-{
+public class CatalogoBean implements Serializable {
 
     //-----------------------------------------------------------
     // Atributos
     //-----------------------------------------------------------
-
     /**
      * Representa un nuevo mueble a ingresar
      */
     private Mueble mueble;
 
     /**
-     * Relación con la interfaz que provee los servicios necesarios del catálogo.
+     * Relación con la interfaz que provee los servicios necesarios del
+     * catálogo.
      */
     @EJB
     private IServicioCatalogoMockLocal catalogo;
@@ -52,43 +48,40 @@ public class CatalogoBean implements Serializable
     //-----------------------------------------------------------
     // Constructor
     //-----------------------------------------------------------
-
     /**
      * Constructor de la clase principal
      */
-    public CatalogoBean()
-    {
-        mueble=new Mueble();
+    public CatalogoBean() {
+        mueble = new Mueble();
     }
 
     //-----------------------------------------------------------
     // Getters y setters
     //-----------------------------------------------------------
-
     /**
      * Devuelve el objeto mueble
+     *
      * @return mueble Objeto mueble
      */
-    public Mueble getMueble()
-    {
+    public Mueble getMueble() {
         return mueble;
     }
 
     /**
      * Modifica el objeto mueble
+     *
      * @param mueble Nuevo mueble
      */
-    public void setMueble(Mueble mueble)
-    {
+    public void setMueble(Mueble mueble) {
         this.mueble = mueble;
     }
 
     /**
      * Devuelve una lista con todos los muebles del sistema
+     *
      * @return muebles Muebles del sistema
      */
-    public List<Mueble> getMuebles()
-    {
+    public List<Mueble> getMuebles() {
 
         return catalogo.darMuebles();
     }
@@ -96,15 +89,13 @@ public class CatalogoBean implements Serializable
     //-----------------------------------------------------------
     // Métodos
     //-----------------------------------------------------------
-
     /**
      * Agrega un nuevo mueble al sistema
      */
-    public void agregarMueble()
-    {
+    public void agregarMueble() {
         try {
             catalogo.agregarMueble(mueble);
-            mueble=new Mueble();
+            mueble = new Mueble();
         } catch (OperacionInvalidaException ex) {
             Logger.getLogger(CatalogoBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -112,42 +103,40 @@ public class CatalogoBean implements Serializable
 
     /**
      * Elimina un mueble del sistema
+     *
      * @param evento Evento que tiene como parámetro el ID del mueble
      */
-    public void eliminarMueble(ActionEvent evento)
-    {
+    public void eliminarMueble(ActionEvent evento) {
         try {
             FacesContext context = FacesContext.getCurrentInstance();
             Map map = context.getExternalContext().getRequestParameterMap();
             long inventoryId = Long.parseLong((String) map.get("muebleId"));
-            
+
             catalogo.eliminarMueble(inventoryId);
         } catch (OperacionInvalidaException ex) {
             Logger.getLogger(CatalogoBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     /**
      * Devuelve los tipos de muebles
+     *
      * @return sitems Tipos de muebles en el sistema
      */
-    public SelectItem[] getTiposMuebles()
-    {
-        TipoMueble[] tipos=  TipoMueble.values();
+    public SelectItem[] getTiposMuebles() {
+        TipoMueble[] tipos = TipoMueble.values();
         SelectItem[] sitems = new SelectItem[tipos.length];
-        
-        for (int i = 0; i < sitems.length; i++)
-        {
-             sitems[i] = new SelectItem(tipos[i]);
+
+        for (int i = 0; i < sitems.length; i++) {
+            sitems[i] = new SelectItem(tipos[i]);
         }
         return sitems;
     }
-    
+
     /**
      * Elimina la información del mueble
      */
-    public void limpiar()
-    {
-        mueble=new Mueble();
+    public void limpiar() {
+        mueble = new Mueble();
     }
 }
